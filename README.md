@@ -1,6 +1,7 @@
 # Customer Experience Analytics for Fintech Apps
----
+
 This repository provides a comprehensive analytical framework for understanding and enhancing customer experience in fintech applications. Through a combination of data science techniques and interactive Jupyter Notebooks, the project aims to extract actionable insights from user data, feedback, and behavioural patterns from three Ethiopian banks –Bank of Abyssinia, Commerical Bank of Ethiopia, and Dashen Bank – mobile application. 
+
 ---
 
 ## Overview
@@ -77,7 +78,7 @@ The analysis in this repository follows a structured methodology:
 ## Usage
 
 1. **Place your data** in the `data/` folder, ensuring paths in notebooks match your data files.
-2. **Run notebooks** sequentially to perform web scrapping and then analysis.
+2. **Run notebooks** sequentially, perform web scrapping and then analysis.
 3. **Interpret outputs** to inform product improvements and customer support strategies.
 
 ---
