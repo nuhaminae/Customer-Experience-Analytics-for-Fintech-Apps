@@ -83,11 +83,11 @@ The analysis in this repository follows a structured methodology:
 
 ---
 
-## Contributing
+## Contribution
 
 Contributions are welcome. Please open an issue or submit a pull request for improvements or new analytics modules.
 
 ---
 
-### Project Status
+## Project Status
 The project is not completed. Check [commit history](https://github.com/nuhaminae/Customer-Experience-Analytics-for-Fintech-Apps/commits/main/) for full detail.
