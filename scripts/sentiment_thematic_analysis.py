@@ -289,3 +289,44 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     print(result_df.head())
 
     return df
+
+#Merge dfs for ease database access
+def concat_and_save_dfs(df_paths, df_folder, df_name):
+    """
+    Reads multiple CSV files into DataFrames, concatenates them,
+    and saves the concatenated DataFrame to a new CSV file.
+
+    Args:
+        df_paths (list): A list of strings, where each string is the path to a CSV file.
+        df_folder (str): The path to the folder where the output CSV will be saved.
+        df_name (str): The name of the output CSV file.
+
+    Returns:
+        pd.DataFrame: The concatenated DataFrame.
+    """
+
+    dataframes = []
+    for df_path in df_paths:
+        df = pd.read_csv(df_path)
+        dataframes.append(df)
+
+    #concatenate the DataFrames
+    preprocessed_df = pd.concat(dataframes, ignore_index=True)
+
+    #create output folder if it doesn't exist
+    if not os.path.exists(df_folder):
+        os.makedirs(df_folder)
+
+    #create the full path for the output file
+    df_filepath = os.path.join(df_folder, df_name)
+
+    #save the concatenated DataFrame to CSV
+    preprocessed_df.to_csv(df_filepath, index=False)
+
+    #calculate the relative path
+    current_directory = os.getcwd()
+    relative_df_path = os.path.relpath(df_filepath, current_directory)
+
+    print(f'Concatenated DataFrame saved to: {relative_df_path}')
+
+    return preprocessed_df
