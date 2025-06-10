@@ -113,8 +113,8 @@ def extract_keywords_spacy(text):
     doc = nlp(text)
     keywords = []
     for token in doc:
-        # You can customize this based on what you consider a keyword
-        if token.pos_ in ['NOUN', 'PROPN', 'ADJ'] and not token.is_stop and not token.is_punct:
+        #part of speech can be customised 
+        if token.pos_ in ['NOUN', 'PROPN', 'ADJ', 'ADV', 'VERB'] and not token.is_stop and not token.is_punct:
             keywords.append(token.lemma_)
     return ", ".join(keywords)
 
@@ -130,15 +130,17 @@ def assign_theme(review_text, keywords):
         str: The identified theme for the review.
     """
     #define rules based on keywords and review content
-    if any(word in review_text.lower() for word in ['login', 'account', 'access', 'password']):
+    review_text_lower = review_text.lower()
+    if any(word in review_text_lower for word in ['login', 'account', 'access', 'password']):
         return 'Account Access Issues'
-    elif any(word in review_text.lower() for word in ['transfer', 'transaction', 'slow', 'speed', 'delay']):
+    elif any(word in review_text_lower for word in ['transfer', 'transaction', 'slow', 'speed', 'delay']):
         return 'Transaction Performance'
-    elif any(word in review_text.lower() for word in ['ui', 'interface', 'design', 'easy', 'user']):
-        return 'User Interface & Experience'
-    elif any(word in review_text.lower() for word in ['support', 'customer service', 'help', 'agent']):
+    elif any(word in review_text_lower for word in ['support', 'customer service', 'help', 'agent']):
         return 'Customer Support'
-    elif any(word in review_text.lower() for word in ['feature', 'request', 'new', 'add']):
+    elif any(word in review_text_lower for word in ['ui', 'interface', 'design', 'easy', 'user']):
+        return 'User Interface & Experience'
+
+    elif any(word in review_text_lower for word in ['feature', 'request', 'new', 'add']):
         return 'Feature Requests'
     else:
         return 'Other' #handle reviews that don't fit defined themes
@@ -181,10 +183,33 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     #close plot to free up space
     plt.close()
     
-    #group by bank and rating, and calculate the mean sentiment score
-    aggregated_sentiment = df.groupby(['bank_name', 'rating'])['score'].mean().reset_index()
+    #group by bank and rating, and calculate the mean sentiment score and count
+    aggregated_sentiment = df.groupby(['bank_name', 
+                                       'rating']).agg(mean_sentiment_score=('score', 
+                                                                            'mean'),
+                                                                            rating_count=('rating', 
+                                                                                          'count')).reset_index()
     print('\nAggregated Results:')
     print(aggregated_sentiment)
+
+    #app rating distribution plot
+    print ('Rating Distribution Plot:\n')
+    aggregated_sentiment.plot( x= 'rating', y='rating_count',
+                              kind='bar', color=['blue','green', 'yellow','red', 'black'], legend=False)
+    plt.title(f'{bank_name} - Rating Distribution')
+    plt.xlabel('Rating')
+    plt.ylabel('Count')
+    plt.xticks(rotation=0) 
+
+    #select plot directory and plot name to save plot
+    plot_name = f'{bank_name} - Rating Distribution.png'
+    plot_path = os.path.join(plot_folder, plot_name)
+    save_plot(plot_folder, plot_name, plot_path)
+
+    #show plot
+    plt.show()
+    #close plot to free up space
+    plt.close()
     
     #work extraction from review text
     df['processed_review'] = df['review_text'].apply(preprocess_text)
@@ -192,7 +217,7 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     #vectorize the dataset
     tfidf_matrix, feature_names = calculate_tfidf(df['processed_review'])
     print('\nTF-IDF Matrix Shape:', tfidf_matrix.shape)
-    print('Feature Names:', feature_names[:25])
+    print('First 25 Feature Names:', feature_names[:25])
 
     #filter positive and negative reviews for keyword extraction
     positive_reviews = df[df['sentiment'] == 'POSITIVE']['processed_review']
@@ -203,7 +228,7 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     if not positive_reviews.empty:
         vectorizer_pos = TfidfVectorizer(max_features=20)
         X_pos = vectorizer_pos.fit_transform(positive_reviews.tolist())
-        print('\nTop Keywords in Positive Reviews:', 
+        print('\nTop 20 Keywords in Positive Reviews:', 
               vectorizer_pos.get_feature_names_out())
     else:
         print('\nNo positive reviews to extract keywords from.')
@@ -213,7 +238,7 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     if not negative_reviews.empty:
         vectorizer_neg = TfidfVectorizer(max_features=20)
         X_neg = vectorizer_neg.fit_transform(negative_reviews.tolist())
-        print('\n Top Keywords in Negative Reviews:', 
+        print('\n Top 20 Keywords in Negative Reviews:', 
               vectorizer_neg.get_feature_names_out())
     else:
         print('\nNo negative reviews to extract keywords from.')
@@ -259,7 +284,7 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     #apply spaCy keyword extraction
     df['spacy_keywords'] = df['review_text'].apply(extract_keywords_spacy)
 
-    # Apply the theme assignment function
+    #apply the theme assignment function
     df['identified_theme(s)'] = df.apply(lambda row: assign_theme(row['review_text'], 
                                                                   row['spacy_keywords']),
                                                                   axis=1)
@@ -290,7 +315,7 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
 
     return df
 
-#Merge dfs for ease database access
+#merge dfs for ease database access
 def concat_and_save_dfs(df_paths, df_folder, df_name):
     """
     Reads multiple CSV files into DataFrames, concatenates them,
