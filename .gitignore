@@ -3,6 +3,8 @@
 .csv
 __pycache__
 .vscode
-settings.json
+launch.json
 .log
 scraper.log
+.env
+history.log
