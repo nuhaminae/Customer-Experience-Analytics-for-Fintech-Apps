@@ -129,21 +129,31 @@ def assign_theme(review_text, keywords):
     Returns:
         str: The identified theme for the review.
     """
+
     #define rules based on keywords and review content
     review_text_lower = review_text.lower()
     if any(word in review_text_lower for word in ['login', 'account', 'access', 'password']):
         return 'Account Access Issues'
-    elif any(word in review_text_lower for word in ['transfer', 'transaction', 'slow', 'speed', 'delay']):
-        return 'Transaction Performance'
-    elif any(word in review_text_lower for word in ['support', 'customer service', 'help', 'agent']):
+    elif any(word in review_text_lower for word in ['transfer', 'transaction', 'slow', 'speed', 'delay', 'payment']):
+        return 'Transaction Performance/Payment Issues'
+    elif any(word in review_text_lower for word in ['support', 'customer service', 'help', 'agent', 'contact']):
         return 'Customer Support'
-    elif any(word in review_text_lower for word in ['ui', 'interface', 'design', 'easy', 'user']):
+    elif any(word in review_text_lower for word in ['ui', 'interface', 'design', 'easy', 'user', 'navigation', 'app']):
         return 'User Interface & Experience'
-
-    elif any(word in review_text_lower for word in ['feature', 'request', 'new', 'add']):
-        return 'Feature Requests'
+    elif any(word in review_text_lower for word in ['bug', 'error', 'crash', 'freeze', 'issue', 'fix']):
+        return 'Bugs and Errors'
+    elif any(word in review_text_lower for word in ['update', 'version', 'install', 'download']):
+        return 'App Updates/Installation'
+    elif any(word in review_text_lower for word in ['security', 'secure', 'fraud', 'safe', 'otp']):
+        return 'Security Concerns'
+    elif any(word in review_text_lower for word in ['feature', 'request', 'new', 'add', 'missing']):
+        return 'Feature Requests/Missing Features'
+    elif any(word in review_text_lower for word in ['notification', 'alert']):
+        return 'Notifications'
+    elif any(word in review_text_lower for word in ['performance', 'speed', 'lag']):
+        return 'App Performance'
     else:
-        return 'Other' #handle reviews that don't fit defined themes
+        return 'Other'
 
 def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     """
@@ -312,6 +322,32 @@ def dfloader_and_analyser (df_path, bank_name, output_folder, plot_folder):
     
     print('\nDataFrame Head:')
     print(result_df.head())
+
+    #plot reviews theme barplot 
+    #set fig size
+    plt.figure(figsize=(10, 6))
+
+    df['identified_theme(s)'].value_counts().plot(kind='bar', color=['skyblue',
+                                                                    'lightcoral', 
+                                                                    'lightgreen', 
+                                                                    'gold', 
+                                                                    'plum'])
+    plt.title(f'{bank_name} - Value Count of User Review Themes')
+    plt.xlabel('Review Theme')
+    plt.ylabel('Count')
+    plt.xticks(rotation=45,
+            ha='right'); #semicolon to suppress the array of value count output
+    plt.tight_layout()
+
+    #select plot directory and plot name to save plot
+    plot_name = f'{bank_name} - Value Count of User Review Themes.png'
+    plot_path = os.path.join(plot_folder, plot_name)
+    save_plot(plot_folder, plot_name, plot_path)
+    
+    #show plot
+    plt.show()
+    #close plot to free up space
+    plt.close()
 
     return df
 
