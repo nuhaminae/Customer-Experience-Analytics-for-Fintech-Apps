@@ -1,47 +1,72 @@
 # Customer Experience Analytics for Fintech Apps
 
-This repository provides a comprehensive analytical framework for understanding and enhancing customer experience in fintech applications. Through a combination of data science techniques and interactive Jupyter Notebooks, the project aims to extract actionable insights from user data, feedback, and behavioural patterns from three Ethiopian banks –Bank of Abyssinia, Commerical Bank of Ethiopia, and Dashen Bank – mobile application. 
+The project is a data science project for analysing customer reviews of majour Ethiopian Banks' mobile applications. The repository provides tools for automated review scraping, preprocessing, sentiment analysis, thematic mining, and visualisation of user feedback from Google Play Store.
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Directory Structure](#directory-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Setup](#setup)
+  - [Usage](#usage)
+- [Analysis Workflow](#analysis-workflow)
+- [Results and Visualisations](#results--visualisations)
+- [Extending the Project](#extending-the-project)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
 ## Overview
 
-Customer experience (CX) is critical to the success of any fintech product. By systematically analysing user sentiment and feedback organisations can identify pain points, improve retention, and tailor services to user needs.
+This project automates the extraction and analysis of user reviews from Google Play Store for top Ethiopian banks' mobile banking applications. It applies NLP techniques to uncover sentiment, detect recurring themes, and visualise feedback trends, providing actionable insights for product improvement and customer satisfaction.
 
-This project is designed for data analysts, product managers, and researchers seeking to leverage data-driven approaches for CX improvement in fintech apps.
+**Targeted Banks:**
+- Bank of Abyssinia (BOA)
+- Commercial Bank of Ethiopia (CBE)
+- Dashen Bank
 
----
-
-## Methodology
-
-The analysis in this repository follows a structured methodology:
-
-1. **Data Acquisition and Preparation**
-   - Collect user rating, feedback, sentiment data.
-   - Clean and preprocess data, ensuring consistency and handling missing and duplicated values.
-
-2. **Exploratory Data Analysis (EDA)**
-   - Explore key metrics like ratings and reviews.
-
-3. **Sentiment and Text Analytics**
-   - Apply Natural Language Processing (NLP) to feedback and support data.
-   - Use sentiment analysis to gauge customer satisfaction and identify recurrent themes.
-
-4. **Visualisation and Reporting**
-   - Present findings through compelling plots, dashboards, and summary statistics.
-   - Visualise key metrics like positive and negative sentiments. 
+**Targeted Apps:**
+- BOAMobile
+- Commercial Mobile Banking
+- Dashen Super App
 
 ---
 
-## Repository Structure
+## Features
+
+- **Automated Scraping:** Collects user reviews using custom Python scripts.
+- **Data Cleaning and Preprocessing:** Removes duplicates, handles missing values, and standardises data.
+- **Sentiment Analysis:** Classifies reviews as positive or negative and computes sentiment scores.
+- **Thematic Analysis:** Extracts key topics and themes using TF-IDF and spaCy.
+- **Visualisation:** Generates sentiment distribution plots and word clouds.
+- **Jupyter Notebooks:** Reproducible analysis and visualisation workflows.
+
+---
+
+## Directory Structure
 
 ```
-.
-├── notebooks/          # Jupyter Notebooks for each analysis step
-├── data/               # (gitignored) Raw and processed data files
-├── scripts/            # Reusable Python modules for analysis
-├── requirements.txt    # Python package dependencies
-└── README.md           # Project documentation
+Customer-Experience-Analytics-for-Fintech-Apps/
+│
+├── notebooks/
+│   ├── web_scrapping.ipynb        # Review scraping and preprocessing
+│   └── analysis.ipynb             # Sentiment and thematic analysis
+│
+├── scripts/
+│   ├── scraper_preprocessor.py    # Custom scraping and preprocessing logic
+│   └── sentiment_thematic_analysis.py  # Sentiment and thematic analysis logic
+│
+├── data/                          # Processed review data (CSV files)
+│
+├── plot_images/                   # Generated plots and word clouds (PNG files)
+│
+├── README.md
+└── ...
 ```
 
 ---
@@ -50,44 +75,86 @@ The analysis in this repository follows a structured methodology:
 
 ### Prerequisites
 
-- Python 3.7 or above
-- Jupyter Notebook or JupyterLab
-- Standard data science libraries: `pandas`, `numpy`, `matplotlib`, `scikit-learn`, `nltk` or `spaCy`, etc.
+- Python 3.8+
+- pip (Python package manager)
+- Recommended: [virtualenv](https://virtualenv.pypa.io/)
 
-### Installation
+**Python packages:**  
+Install dependencies listed in `requirements.txt`
 
-1. **Clone the Repository**
+### Setup
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/nuhaminae/Customer-Experience-Analytics-for-Fintech-Apps.git
    cd Customer-Experience-Analytics-for-Fintech-Apps
    ```
 
-2. **Install Dependencies**
+2. **Create and activate a virtual environment (optional but recommended):**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate      # On Unix or Mac
+   .venv\Scripts\activate         # On Windows
+   ```
+
+3. **Install required packages:**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Launch Jupyter Notebook**
-   ```bash
-   jupyter notebook
-   ```
-   Open the desired notebook in the `notebooks/` directory.
+### Usage
+
+- **Data Scraping and Preprocessing:**  
+  Open and run `notebooks/web_scrapping.ipynb` to collect and prepare review data.
+
+- **Analysis and Visualisation:**  
+  Open and run `notebooks/analysis.ipynb` to perform sentiment, thematic analysis, and generate plots.
+
+- **Database Handling:**
+  Open and run `notebooks/banks_schema`, `notebooks/reviews_schema`, `notebooks/banks_values.sql`, and `notebooks/oracle.ipynb` chronologically (with caution) to save cleaned CSV to database.
 
 ---
 
-## Usage
+## Analysis Workflow
 
-1. **Place your data** in the `data/` folder, ensuring paths in notebooks match your data files.
-2. **Run notebooks** sequentially, perform web scrapping and then analysis.
-3. **Interpret outputs** to inform product improvements and customer support strategies.
+1. **Scrape app reviews** using custom scripts.
+2. **Preprocess the data**: remove duplicates, handle missing values, and save to CSV.
+3. **Sentiment analysis**: classify each review and compute sentiment scores.
+4. **Thematic analysis**: extract top keywords and assign themes.
+5. **Visualise results**: generate sentiment distributions and word clouds.
+6. **Save outputs**: processed data in `data/`, visualisations in `plot_images/`.
+
+---
+
+## Results and Visualisations
+
+- **Processed Data:**  
+  Cleaned and enriched review datasets for each bank, stored as CSV files in `data/`.
+
+- **Plots and Word Clouds:**  
+  Sentiment distributions and keyword clouds, stored as PNGs in `plot_images/`.
+
+- **Sample Visualisations:**
+  - Sentiment distribution by rating
+  - Top keywords in positive/negative reviews
+  - Thematic breakdowns
+
+---
+
+## Extending the Project
+
+- Add more banks or fintech apps by updating the app IDs in the scraping script.
+- Integrate additional data sources (e.g., Apple App Store, social media).
+- Enhance NLP analysis with advanced models.
+- Automate regular scraping and reporting.
 
 ---
 
 ## Contribution
 
-Contributions are welcome. Please open an issue or submit a pull request for improvements or new analytics modules.
+Contributions, suggestions, and bug reports are welcome!  
+Feel free to open an issue or submit a pull request.
 
----
 
 ## Project Status
-The project is not completed. Check [commit history](https://github.com/nuhaminae/Customer-Experience-Analytics-for-Fintech-Apps/commits/main/) for full detail.
+The project is completed. Check [commit history](https://github.com/nuhaminae/Customer-Experience-Analytics-for-Fintech-Apps/commits/main/) for full detail.
